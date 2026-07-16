@@ -1,0 +1,136 @@
+RGF PATTERN LABORATORY GUIDE
+============================
+
+DEFINITION
+----------
+A restricted growth function of length n is a word w=w_1...w_n satisfying
+
+    w_1=1,
+    w_i <= 1 + max(w_1,...,w_{i-1})  for i>=2.
+
+The empty word is included at n=0. An RGF encodes a set partition by putting i
+and j in the same block exactly when w_i=w_j. The maximum of the word is the
+number of blocks.
+
+For example,
+
+    121324
+
+encodes
+
+    {1,3}, {2,5}, {4}, {6}.
+
+SEARCH TREE
+-----------
+Every node is a valid RGF prefix. The root has only the child 1. If a prefix has
+current maximum m, its children are obtained by appending any letter in
+
+    {1,2,...,m,m+1}.
+
+Thus the first levels are
+
+    empty
+      `- 1
+          |- 11
+          |   |- 111
+          |   `- 112
+          `- 12
+              |- 121
+              |- 122
+              `- 123
+
+For exact block count k, a child m+1 is forbidden once m=k. If a prefix has
+length r and current maximum m, it can introduce at most n-r new block labels.
+The branch is therefore pruned when
+
+    m + (n-r) < k.
+
+No used-letter mask or surjectivity test is needed: the restricted-growth rule
+automatically guarantees that every label 1,...,m has appeared.
+
+AVOIDANCE PRUNING
+-----------------
+After appending a new letter at position r, any newly created forbidden
+occurrence must use r as its final selected position. Occurrences lying wholly
+inside the old prefix were checked earlier. The detector therefore fixes r as
+the final occurrence index and searches backward for the earlier selected
+positions, rejecting partial choices as soon as one required inequality,
+equality, or vincular bond fails.
+
+Once a prefix contains a forbidden pattern, every extension also contains it,
+so the whole subtree is discarded. For several classes in one run, a bit mask
+records which classes remain viable; the branch stops only when every class has
+been violated.
+
+PARALLEL SEARCH
+---------------
+The engine first builds a frontier of surviving RGF prefixes at a shallow split
+depth. Each frontier prefix defines an independent subtree. Many more tasks than
+worker threads are created, and workers repeatedly claim the next task from an
+atomic counter. This dynamically balances uneven subtree sizes.
+
+Each worker keeps private count and statistic accumulators. These are merged
+after the parallel traversal, avoiding synchronization at every leaf.
+
+PATTERN TYPES
+-------------
+Classical patterns use arbitrary increasing index sets.
+
+Consecutive patterns require all selected positions to form one interval.
+
+Vincular patterns require only specified adjacent pairs. For
+
+    vincular:1232|2
+
+the second and third selected positions must be adjacent.
+
+The relative-order/equality convention is the same as in the Cayley app. The
+basis pattern may be any Cayley pattern, including a non-RGF such as 312.
+
+REFINED OUTPUT
+--------------
+The Totals tab gives the number of avoiding RGFs of each length n. The refined
+tab gives counts by exact block number k. Without avoidance restrictions, these
+are respectively
+
+    B_n       Bell numbers,
+    S(n,k)    Stirling numbers of the second kind.
+
+STATISTICS
+----------
+Every general word statistic in the shared engine can be used for RGFs. The
+following interpretations are especially natural:
+
+    maximum             number of blocks
+    evaluation          ordered block-size vector
+    singleton_letters   singleton blocks
+    repeated_letters    nonsingleton blocks
+
+The current viewer is the n by n word diagram with points (i,w_i). An arc-diagram
+viewer and specifically set-partition statistics such as crossings, nestings,
+and Wachs-White statistics are natural future extensions but are not part of
+version 8.0.
+
+EXAMPLES
+--------
+Classical basis:
+
+    avoid_111_312 = 111 + 312
+
+Consecutive basis:
+
+    no_consecutive_121 = consecutive:121
+
+Mixed basis:
+
+    mixed = 121 + consecutive:11 + vincular:1232|2
+
+Command line, all lengths through 12:
+
+    .\PatternEngine.exe --family rgf --min-n 0 --max-n 12 `
+        --classes rgf_classes_examples.txt --threads 16 --output results\rgf
+
+Command line, exactly 5 blocks:
+
+    .\PatternEngine.exe --family rgf --min-n 5 --max-n 12 --k 5 `
+        --class "avoid_121 = 121" --threads 16 --output results\rgf_k5

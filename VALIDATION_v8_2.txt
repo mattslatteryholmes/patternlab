@@ -1,0 +1,31 @@
+PATTERN LABORATORY SUITE 8.2 - OEIS SINGLE-RESULT FIX
+=====================================================
+
+Observed failure
+----------------
+Version 8.1 succeeded for OEIS searches yielding several matching entries, but
+an otherwise successful unique match could be unwrapped by Windows PowerShell
+5.1 into a scalar PSCustomObject. Under StrictMode, the subsequent access to
+.Count raised a property-not-found exception.
+
+Correction
+----------
+The indexed-match, value-only-match, and preferred-match variables are now
+explicit object arrays. Branch assignment is performed separately rather than
+by assigning the output of an if statement, and cardinality tests use Length.
+
+Cases covered by the revised control flow
+-----------------------------------------
+- no matching candidates: preferred.Length = 0;
+- exactly one indexed candidate: preferred.Length = 1;
+- exactly one value-list candidate: preferred.Length = 1;
+- several indexed candidates;
+- several value-list candidates;
+- current OEIS top-level JSON arrays;
+- legacy/wrapper JSON objects with a results property;
+- a scalar sequence object returned by ConvertFrom-Json for a one-item array.
+
+Regression scope
+----------------
+Only CayleyPatternLaboratory.ps1 and RGFPatternLaboratory.ps1 changed in the
+runtime code. PatternEngine.exe and PatternEngine.cpp are unchanged.

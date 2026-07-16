@@ -1,0 +1,46 @@
+OEIS LOOKUP IN PATTERN LABORATORY 8.2
+=====================================
+
+The bottom row of the Totals by n table is a live, non-exported OEIS footer.
+One cell is shown beneath each avoidance-class column.
+
+STATUS TEXT
+-----------
+A123456 (indexed match)
+    The displayed terms agree with that OEIS entry and the OEIS offset aligns
+    with the displayed n-values.
+
+A123456 (value-list match)
+    The finite list occurs in that entry, but with a different index offset.
+
+N indexed matches / N possible value-list matches
+    More than one returned OEIS entry agrees with the finite data. Right-click
+    and open the OEIS search to inspect all candidates.
+
+No OEIS match found
+    No matching finite sequence was found among the OEIS search results returned
+    for the queried terms. This is not proof that the sequence is absent from the OEIS.
+
+Too few terms for lookup
+    Fewer than six totals were enumerated. Compute more n-values first.
+
+OEIS lookup unavailable
+    The online request failed or the computer has no Internet connection.
+
+INTERACTION
+-----------
+Hover:       detailed status, queried n-range, and matched entry names.
+Double-click: open the primary OEIS entry, or the raw OEIS search if no primary
+              entry is available.
+Right-click: open primary match, open search, copy terms, or refresh all checks.
+
+The check uses at most 10 consecutive totals and never modifies the enumerated
+CSV data. Finite agreement is only evidence and can be accidental.
+
+VERSION 8.2 CORRECTION
+----------------------
+Windows PowerShell 5.1 can unwrap a one-item collection into a scalar object.
+Version 8.1 consequently failed after an otherwise successful search when
+exactly one OEIS entry matched, because the scalar had no Count property.
+Version 8.2 explicitly preserves zero-, one-, and many-result collections as
+arrays. Unique matches now display normally.

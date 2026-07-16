@@ -1,0 +1,12 @@
+# One RGF avoidance class per line. A plus sign means every listed pattern is forbidden.
+# The objects being generated are restricted growth functions, but a basis pattern may be
+# any Cayley pattern (for example 312), as in current RGF pattern-avoidance literature.
+
+avoid_111_312 = 111 + 312
+avoid_211_321 = 211 + 321
+avoid_121 = 121
+
+# Consecutive and vincular patterns use the same syntax as in the Cayley application.
+avoid_consecutive_121 = consecutive:121
+avoid_bonded_1232 = vincular:1232|2
+mixed_rgf_class = 121 + consecutive:11 + vincular:1232|2

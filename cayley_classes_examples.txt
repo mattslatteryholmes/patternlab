@@ -1,0 +1,21 @@
+# One Cayley avoidance class per line. A plus sign means every listed pattern is forbidden.
+
+# Classical patterns (the classical: prefix is optional)
+avoid_13442 = 13442
+avoid_132 = classical:132
+
+# Consecutive patterns: every selected position in an occurrence is adjacent.
+avoid_consecutive_121 = consecutive:121
+
+# Vincular patterns: the numbers after | are bond positions.
+# Here the second and third selected positions must be adjacent.
+avoid_bonded_1232 = vincular:1232|2
+
+# Bonds after pattern positions 1 and 3.
+avoid_two_bonds = vincular:12321|1,3
+
+# Mixed bases are allowed.
+mixed_class = 13442 + consecutive:121 + vincular:1232|2
+
+# Values 10 and above are separated by spaces or commas.
+# large_rank_example = vincular:1 3 10 4 4 2 5 6 7 8 9|1,3
