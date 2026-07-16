@@ -10,7 +10,6 @@ native C++ engine:
     RGFPatternLaboratory.exe        restricted growth functions / set partitions
     PatternEngine.exe               shared command-line computation engine
 
-No WSL, Ubuntu, compiler installation, or administrator access is required.
 
 QUICK START
 -----------
